@@ -1,11 +1,12 @@
 package fr.esgi.al.funprog
 
 import fr.esgi.al.infrastructure.command.local.WriteLocalJson
+import fr.esgi.al.infrastructure.command.local.WriteLocalJson.Limits
 import fr.esgi.al.infrastructure.query.local.QueryOnLocal
 
 object Main extends App {
   println(QueryOnLocal.extractLines())
-  println(WriteLocalJson.appendAllRobotsResults(List("Ab", "Bc")))
+  println(WriteLocalJson.overwriteAllRobotsResults(Limits("Ab", "Bc")))
   println("Ici le programme principal")
   // Le code suivant ne compilera pas.
   // var tmp = null;

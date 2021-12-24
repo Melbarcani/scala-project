@@ -8,7 +8,10 @@ object FilesUtils {
   val conf: Config = ConfigFactory.load()
 
   def getInput: File = {
-    val input = conf.getString("application.input-file")
-    File(input) // using constructor
+    File(conf.getString("application.input-file"))
+  }
+
+  def getJsonOutput: File = {
+    File(conf.getString("application.output-json-file"))
   }
 }
