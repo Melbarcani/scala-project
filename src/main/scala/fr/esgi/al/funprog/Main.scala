@@ -1,17 +1,17 @@
 package fr.esgi.al.funprog
 
 import fr.esgi.al.infrastructure.command.local.WriteLocalJson
-import fr.esgi.al.infrastructure.command.local.WriteLocalJson.Limits
 import fr.esgi.al.infrastructure.query.local.QueryOnLocal
+import use_case.WriteJson
+import use_case.WriteJson.{Instruction, Point, Result, Status, Tondeuses}
 
 object Main extends App {
   println(QueryOnLocal.extractLines())
-  println(WriteLocalJson.overwriteAllRobotsResults(Limits("Ab", "Bc")))
-  println("Ici le programme principal")
-  // Le code suivant ne compilera pas.
-  // var tmp = null;
-  // var tmp2 = if (tmp == 1) "yes" else 1
-
-  // println(s"tmp: $tmp, tmp2: $tmp2")
+  val p =Point(1,2)
+  val ins = Instruction("A", "B")
+  val stat = Status(p,"a")
+  val t = Tondeuses(stat, ins, stat)
+  val s = WriteJson.overwriteAllRobotsResults(Result(p, t)).toString()
+  println(WriteLocalJson.appendAllRobotsResults(s))
   //cqrs
 }
