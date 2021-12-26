@@ -62,9 +62,9 @@ object QueryOnLocal extends Query {
     case _ => BadStarter()
   }
 
-  def isNumber(coordinates: List[String]) = coordinates.forall(s => {
-    s.charAt(0).toInt > 0
-  })
+  def getPoint : (Int, Int) => Point = (a: Int, b : Int) => Point(a,b)
+
+  def isNumber(coordinates: List[String]): Boolean = coordinates.forall(s => Try(s.toInt).isSuccess)
 
   def isBoardSizeCorrect(coordinates: List[String]): Boolean = isNumber(coordinates) && coordinates.length == 2
 
