@@ -33,6 +33,7 @@ object WriteLocalJson extends Command{
   override def overwriteAllRobotsResults(lines: String): Unit = ???
 
   override def appendAllRobotsResults(lines: String): Unit = {
+    print(lines)
     f.createIfNotExists().appendLine(lines)
     print("a")
   }

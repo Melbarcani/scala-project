@@ -2,16 +2,18 @@ package fr.esgi.al.funprog
 
 import fr.esgi.al.infrastructure.command.local.WriteLocalJson
 import fr.esgi.al.infrastructure.query.local.QueryOnLocal
-import use_case.WriteJson
-import use_case.WriteJson.{Instruction, Point, Result, Status, Tondeuses}
+import fr.esgi.al.use_case.WriteJson
+import fr.esgi.al.use_case.WriteJson.{PointJson, ResultJson, StatusJson, TondeusesJson}
 
 object Main extends App {
-  println(QueryOnLocal.extractLines())
-  val p =Point(1,2)
-  val ins = Instruction("A", "B")
-  val stat = Status(p,"a")
-  val t = Tondeuses(stat, ins, stat)
-  val s = WriteJson.overwriteAllRobotsResults(Result(p, t)).toString()
+  /*val d = QueryOnLocal.parseData()*/
+  val d = QueryOnLocal.extractData()
+  println(d)
+  val p = PointJson(1, 2)
+  /*val ins = InstructionJson(List("A", "B"))*/
+  val stat = StatusJson(p, "a")
+  val t = TondeusesJson(stat, List("A", "B"), stat)
+  val s = WriteJson.overwriteAllRobotsResults(ResultJson(p, List(t))).toString()
   println(WriteLocalJson.appendAllRobotsResults(s))
   //cqrs
 }
