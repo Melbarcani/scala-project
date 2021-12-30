@@ -1,6 +1,11 @@
 package fr.esgi.al.use_case
 
-import fr.esgi.al.domaine.Model.{Starter}
+import fr.esgi.al.domaine.Model.{Point, Starter, Status, Tondeuse}
+import fr.esgi.al.infrastructure.utils.Directions.{Direction, East, North, South}
+import fr.esgi.al.infrastructure.utils.Instructions
+import fr.esgi.al.infrastructure.utils.Instructions.{Avance, Droite, Gauche, Instruction}
+
+import scala.annotation.tailrec
 
 object Board {
 
@@ -8,10 +13,11 @@ object Board {
 
   object MoveRobots {
 
-    /*def apply(starter: Starter): List[Tondeuse] = moveTondeuses(starter.size, starter.starterTondeuses)
+    def apply(starter: Starter): List[Tondeuse] = moveTondeuses(starter.size, starter.starterTondeuses)
 
     def moveTondeuses(size: Point, starterTondeuses: List[Tondeuse]): List[Tondeuse] = moveOneByOneTondeuse(size, starterTondeuses, Nil)
 
+    @tailrec
     def moveOneByOneTondeuse(size: Point
                              , listStarterTondeuses: List[Tondeuse]
                              , listeResultTondeuses: List[Tondeuse]): List[Tondeuse] = listStarterTondeuses match {
@@ -19,18 +25,30 @@ object Board {
       case Nil => listeResultTondeuses
     }
 
-    def move(size: Point, tondeuse: Tondeuse, listeResultTondeuses: List[Tondeuse]): List[Tondeuse] = listeResultTondeuses.appended(moveTondeuse(size, tondeuse))
+    def move(size: Point, tondeuse: Tondeuse, listeResultTondeuses: List[Tondeuse]): List[Tondeuse] = 
+      listeResultTondeuses.appended(Tondeuse(moveTondeuseList(size, tondeuse.status, tondeuse.instructions), tondeuse.instructions))
 
-    def moveTondeuse(size: Point, tondeuse: Tondeuse): Tondeuse = {
-
+    @tailrec
+    def moveTondeuseList(size: Point, status: Status, instructions: List[Instruction]): Status = instructions match {
+      case Gauche :: rest => moveTondeuseList(size, Status(status.coordinates, Direction.turn(Instructions.Gauche, status.direction)), rest)
+      case Droite :: rest => moveTondeuseList(size, Status(status.coordinates, Direction.turn(Instructions.Droite, status.direction)), rest)
+      case Avance :: rest => moveTondeuseList(size, justMove(size, status), rest)
+      case _ => status
     }
 
-    class MoveBot(val f: (Status, Instruction) => Status) {
-      def execute(status: Status, instruction: Instruction) = f(status, instruction)
+    def justMove(size: Point, status: Status): Status = status.direction match {
+      case North => Status(coordinates = Point(status.coordinates.x, new MoveBot(farFromOrigin).execute(size.y, status.coordinates.y)), direction = status.direction)
+      case East => Status(Point(new MoveBot(farFromOrigin).execute(size.x, status.coordinates.x), status.coordinates.y ), status.direction)
+      case South => Status(coordinates = Point(status.coordinates.x, new MoveBot(toOrigin).execute(size.y, status.coordinates.y)), status.direction)
+      case _ => Status(coordinates =Point(new MoveBot(toOrigin).execute(size.x, status.coordinates.x), status.coordinates.y ), status.direction)
     }
 
-    val moveForward = (s: Status, i: Instruction) => {
+    class MoveBot(val f: (Int, Int) => Int) {
+      def execute(sizeCoordinate: Int, currentCoordinate: Int): Int = f(sizeCoordinate, currentCoordinate)
+    }
 
-    }*/
+    val farFromOrigin: (Int, Int) => Int = (sizeX: Int, currentX: Int) => if (currentX + 1 > sizeX) sizeX else currentX + 1
+    val toOrigin: (Int, Int) => Int = (sizeX: Int, currentX: Int) => if (currentX - 1 < sizeX - sizeX) 0 else currentX - 1
+
   }
 }

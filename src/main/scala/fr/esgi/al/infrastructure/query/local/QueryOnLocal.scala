@@ -1,11 +1,14 @@
 package fr.esgi.al.infrastructure.query.local
 
 import better.files.File
-import fr.esgi.al.domaine.Model.{AbstractStarter, BadStarter, Instruction, Point, Starter, Status, Tondeuse}
+import fr.esgi.al.domaine.Model.{AbstractStarter, BadStarter, Point, Starter, Status, Tondeuse}
 import fr.esgi.al.infrastructure.exception.DonneesIncorectesException
 import fr.esgi.al.infrastructure.query.Query
-import fr.esgi.al.infrastructure.utils.Constants.{VALID_INSTRUCTIONS, VALID_ORIENTATIONS}
-import fr.esgi.al.infrastructure.utils.FilesUtils
+import fr.esgi.al.infrastructure.utils.Constants.VALID_ORIENTATIONS
+import fr.esgi.al.infrastructure.utils.Directions.Direction
+import fr.esgi.al.infrastructure.utils.Instructions.{Instruction, Movement}
+import fr.esgi.al.infrastructure.utils.{FilesUtils, Instructions}
+import fr.esgi.al.use_case.Board.MoveRobots
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
@@ -44,14 +47,14 @@ object QueryOnLocal extends Query {
 
   def extractData(): Object = {
     extract(parseData()) match {
-      case Success(starter) => checkFailure(starter)
+      case Success(starter) => startMove(starter)
       case Failure(a) => DonneesIncorectesException("Incorrect data => " + a.getMessage)
     }
   }
 
-  def checkFailure(starter: AbstractStarter): Object = starter match {
-    case BadStarter() => DonneesIncorectesException("Incorrect data => Entered data is not correct")
-    case _ => starter
+  def startMove(starter: AbstractStarter): Object = starter match {
+    case Starter(a,b) => MoveRobots(Starter(a,b))
+    case _ => DonneesIncorectesException("Incorrect data => Entered data is not correct")
   }
 
   def extract(data: List[List[String]]): Try[AbstractStarter] = Try(extractStarter(data))
@@ -75,7 +78,7 @@ object QueryOnLocal extends Query {
     case status :: instructions :: next =>
       status.length == 3 &&
         VALID_ORIENTATIONS.contains(status(2)) &&
-        instructions.forall(i => VALID_INSTRUCTIONS.contains(i)) &&
+        instructions.forall(i => Instructions.values.contains(i)) &&
         primaryCheckHelper(next, verified = true)
     case _ => verified
   }
@@ -88,19 +91,29 @@ object QueryOnLocal extends Query {
     (listInputTondeuses, starters) match {
       case (status :: instructions :: nextTondeuses, _) =>
         extractTondeusesHelper(nextTondeuses, starters.appendedAll(List(Tondeuse(extractStatus(status),
-          Instruction(instructions)))))
+          extractInstructions(instructions)))))
       case (_, Nil) => Nil
       case (_, _) => starters
     }
 
+  @tailrec
+  def extractInstructionsHelper(instructionsInput: List[String], instructions: List[Instruction]): List[Instruction] = instructionsInput match {
+    case ins::rest => extractInstructionsHelper(rest, instructions.appended(Movement.apply(ins)))
+    case Nil => instructions
+  }
+
+
+  def extractInstructions(instructionsInput: List[String]) : List[Instruction] = extractInstructionsHelper(instructionsInput, Nil)
+
+
   def extractPoint(l: List[String]): Point = Point(l(0).toInt, l(1).toInt)
 
-  def extractStatus(s: List[String]): Status = Status(extractPoint(s), s(2))
+  def extractStatus(s: List[String]): Status = Status(extractPoint(s), Direction(s(2)))
 
   @tailrec
   def checkAndExtractInstruction(instructions: List[Char], verifiedInstructions: List[String]): List[String] = instructions match {
-    case i :: r if VALID_INSTRUCTIONS.contains(i.toString) => checkAndExtractInstruction(r, verifiedInstructions.appended(i.toString))
-    case i :: Nil if VALID_INSTRUCTIONS.contains(i.toString) => verifiedInstructions.appended(i.toString)
+    case i :: r if Instructions.values.contains(i.toString) => checkAndExtractInstruction(r, verifiedInstructions.appended(i.toString))
+    case i :: Nil if Instructions.values.contains(i.toString) => verifiedInstructions.appended(i.toString)
     case _ => verifiedInstructions
   }
 
