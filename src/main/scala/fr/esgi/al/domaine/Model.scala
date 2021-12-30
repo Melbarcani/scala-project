@@ -10,7 +10,11 @@ object Model {
 
   case class Tondeuse(status: Status, instructions: List[Instruction])
 
+  case class TondeuseResult(startStatus: Status, instructions: List[Instruction], endStatus: Status)
+
   case class Status(coordinates: Point, direction: Direction)
 
   case class Point(x: Int, y: Int)
+
+  case class Result(size: Point, tondeuseResult: List[TondeuseResult])
 }

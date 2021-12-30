@@ -1,6 +1,6 @@
 package fr.esgi.al.use_case
 
-import fr.esgi.al.domaine.Model.{Point, Starter, Status, Tondeuse}
+import fr.esgi.al.domaine.Model.{Point, Result, Starter, Status, Tondeuse, TondeuseResult}
 import fr.esgi.al.infrastructure.utils.Directions.{Direction, East, North, South}
 import fr.esgi.al.infrastructure.utils.Instructions
 import fr.esgi.al.infrastructure.utils.Instructions.{Avance, Droite, Gauche, Instruction}
@@ -13,20 +13,17 @@ object Board {
 
   object MoveRobots {
 
-    def apply(starter: Starter): List[Tondeuse] = moveTondeuses(starter.size, starter.starterTondeuses)
+    //def apply(starter: Starter): Starter = Starter(starter.size, moveOneByOneTondeuse(starter.size, starter.starterTondeuses, Nil))
 
-    def moveTondeuses(size: Point, starterTondeuses: List[Tondeuse]): List[Tondeuse] = moveOneByOneTondeuse(size, starterTondeuses, Nil)
+    def apply(starter: Starter) : Result = Result(starter.size, moveOneByOneTondeuse(starter.size, starter.starterTondeuses, Nil))
 
     @tailrec
     def moveOneByOneTondeuse(size: Point
                              , listStarterTondeuses: List[Tondeuse]
-                             , listeResultTondeuses: List[Tondeuse]): List[Tondeuse] = listStarterTondeuses match {
-      case head :: rest => moveOneByOneTondeuse(size, rest, move(size, head, listeResultTondeuses))
+                             , listeResultTondeuses: List[TondeuseResult]): List[TondeuseResult] = listStarterTondeuses match {
+      case tondeuse :: rest => moveOneByOneTondeuse(size, rest, listeResultTondeuses.appended(TondeuseResult(tondeuse.status, tondeuse.instructions, moveTondeuseList(size, tondeuse.status, tondeuse.instructions))))
       case Nil => listeResultTondeuses
     }
-
-    def move(size: Point, tondeuse: Tondeuse, listeResultTondeuses: List[Tondeuse]): List[Tondeuse] = 
-      listeResultTondeuses.appended(Tondeuse(moveTondeuseList(size, tondeuse.status, tondeuse.instructions), tondeuse.instructions))
 
     @tailrec
     def moveTondeuseList(size: Point, status: Status, instructions: List[Instruction]): Status = instructions match {
