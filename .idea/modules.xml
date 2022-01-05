@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/funprog-AL.iml" filepath="$PROJECT_DIR$/.idea/modules/funprog-AL.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/funprog-AL-build.iml" filepath="$PROJECT_DIR$/.idea/modules/funprog-AL-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/project.funprog-AL-build.iml" filepath="$PROJECT_DIR$/.idea/modules/project.funprog-AL-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scala-project.funprog-AL.iml" filepath="$PROJECT_DIR$/.idea/modules/scala-project.funprog-AL.iml" />
     </modules>
   </component>
 </project>

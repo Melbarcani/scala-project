@@ -14,4 +14,8 @@ object FilesUtils {
   def getJsonOutput: File = {
     File(conf.getString("application.output-json-file"))
   }
+
+  def getCSVOutput: File = {
+    File(conf.getString("application.output-csv-file"))
+  }
 }

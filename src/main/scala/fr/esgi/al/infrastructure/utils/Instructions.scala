@@ -1,6 +1,10 @@
 package fr.esgi.al.infrastructure.utils
 
-import fr.esgi.al.infrastructure.utils.Instructions.Movement.{AVANCE, DROITE, GAUCHE}
+import fr.esgi.al.infrastructure.utils.Instructions.Movement.{
+  AVANCE,
+  DROITE,
+  GAUCHE
+}
 
 object Instructions {
   sealed abstract class Instruction(val value: String) extends Enumeration
@@ -21,7 +25,7 @@ object Instructions {
     def apply(ins: String): Instruction = ins match {
       case GAUCHE => Gauche
       case DROITE => Droite
-      case _ => Avance
+      case _      => Avance
     }
   }
 }

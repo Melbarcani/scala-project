@@ -1,13 +1,20 @@
 package fr.esgi.al.infrastructure.utils
 
-import fr.esgi.al.infrastructure.utils.Directions.Direction.{EAST, NORTH, SOUTH, WEST}
-import fr.esgi.al.infrastructure.utils.Instructions.{Droite, Gauche, Instruction}
+import fr.esgi.al.infrastructure.utils.Directions.Direction.{
+  EAST,
+  NORTH,
+  SOUTH,
+  WEST
+}
+import fr.esgi.al.infrastructure.utils.Instructions.{
+  Droite,
+  Gauche,
+  Instruction
+}
 
 object Directions {
 
-  sealed abstract class Direction(val value: String) extends Enumeration{
-
-  }
+  sealed abstract class Direction(val value: String) extends Enumeration {}
 
   case object North extends Direction(NORTH)
 
@@ -27,16 +34,16 @@ object Directions {
 
     def apply(d: String): Direction = d match {
       case NORTH => North
-      case EAST => East
+      case EAST  => East
       case SOUTH => South
-      case _ => West
+      case _     => West
     }
 
-    def turn(i: Instruction, d: Direction): Direction = (i,d) match {
-      case (Gauche,North) | (Droite,South) => Direction(WEST)
-      case (Gauche,East) | (Droite,West) => Direction(NORTH)
-      case (Gauche,South) | (Droite,North) => Direction(EAST)
-      case (_,_) => Direction(SOUTH)
+    def turn(i: Instruction, d: Direction): Direction = (i, d) match {
+      case (Gauche, North) | (Droite, South) => Direction(WEST)
+      case (Gauche, East) | (Droite, West)   => Direction(NORTH)
+      case (Gauche, South) | (Droite, North) => Direction(EAST)
+      case (_, _)                            => Direction(SOUTH)
     }
   }
 

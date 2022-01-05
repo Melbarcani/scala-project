@@ -1342,7 +1342,7 @@
     <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
     <!-- site is only included to make maven-site-plugin stop complaining -->
     <site>
-      <id>www.example.com</id>
+      <id>www.infrastructure.com</id>
       <url>scp://www.example.com/www/docs/project/</url>
     </site>
   </distributionManagement>
